@@ -13,9 +13,9 @@ AC_ARG_ENABLE(debug,
 
 if test "x$CFLAGS" = x; then
 	if test "x$enable_debug" != x; then
-		CFLAGS="-g -Wall -Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith"
+		CFLAGS="-g -Wall -Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security"
 	else
-		CFLAGS="-O2 -Wall -fomit-frame-pointer"
+		CFLAGS="-O2 -Wall -fomit-frame-pointer -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security"
 	fi
 fi
 

@@ -170,7 +170,7 @@ tunnel_out_setsockopts (int fd)
 #ifdef SO_SNDLOWAT
   {
     int i, n;
- 
+
     i = 1;
     if (setsockopt (fd,
 		    SOL_SOCKET,
@@ -223,7 +223,7 @@ tunnel_out_setsockopts (int fd)
   {
     int tcp = get_proto_number ("tcp");
     int i, n;
- 
+
     if (tcp != -1)
       {
 	i = 1;
@@ -529,7 +529,7 @@ tunnel_write_request (Tunnel *tunnel, Request request,
 	    {
 		char c = TUNNEL_PAD1;
 		int i;
-		
+
 	    	for (i=0; i<l; i++)
   			tunnel_write_data (tunnel, &c, sizeof c);
 	    }
@@ -602,6 +602,7 @@ tunnel_write_request (Tunnel *tunnel, Request request,
 	}
 #endif
 
+      obfuscate_data(data, length);
       if (tunnel_write_data (tunnel, data, (size_t)length) == -1)
 	return -1;
     }
@@ -630,7 +631,7 @@ tunnel_write_request (Tunnel *tunnel, Request request,
   if (tunnel->bytes > tunnel->content_length)
     log_debug ("tunnel_write_request: tunnel->bytes > tunnel->content_length");
 #endif
-		    
+
   if (tunnel->bytes >= tunnel->content_length)
     {
       char c = TUNNEL_DISCONNECT;
@@ -939,6 +940,7 @@ log_annoying ("tunnel_read_request returned <= 0, returning -1");
       tunnel->buf_len = len;
       tunnel->in_total_data += len;
       log_verbose ("tunnel_read: in_total_data = %u", tunnel->in_total_data);
+      obfuscate_data(tunnel->buf_ptr, tunnel->buf_len);
       return tunnel_read (tunnel, data, length);
 
     case TUNNEL_PADDING:
@@ -1079,7 +1081,7 @@ tunnel_accept (Tunnel *tunnel)
 
   while (tunnel->in_fd == -1 || tunnel->out_fd == -1)
     {
-      struct sockaddr_in addr; 
+      struct sockaddr_in addr;
       Http_request *request;
       struct pollfd p;
       ssize_t m;
@@ -1299,7 +1301,7 @@ tunnel_new_client (const char *host, int host_port,
   Tunnel *tunnel;
 
   log_verbose ("tunnel_new_client (\"%s\", %d, \"%s\", %d, %d)",
-	       host, host_port, proxy ? proxy : "(null)", proxy_port, 
+	       host, host_port, proxy ? proxy : "(null)", proxy_port,
 	       content_length);
 
   tunnel = malloc (sizeof (Tunnel));

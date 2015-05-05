@@ -166,7 +166,18 @@ handle_input (const char *type, Tunnel *tunnel, int fd, int events,
 	  else
 	    log_error ("%s read error: %s", type, strerror (errno));
 	  *closed = TRUE;
-	}		
+	}
+    }
+}
+
+static inline void
+obfuscate_data (void * data, size_t length)
+{
+  int i;
+  char *obfuscated = data;
+  for (i = 0; i < length; i++)
+    {
+      obfuscated[i] ^= 0x80;
     }
 }
 
